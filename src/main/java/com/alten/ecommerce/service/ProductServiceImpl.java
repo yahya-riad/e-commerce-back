@@ -8,10 +8,9 @@ import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,6 +19,7 @@ import static java.util.Objects.requireNonNull;
 @RequiredArgsConstructor
 @Slf4j
 public class ProductServiceImpl implements ProductService{
+
     @NonNull private final ProductRepository productRepository;
     @NonNull private final ProductMapper productMapper;
 
@@ -28,13 +28,14 @@ public class ProductServiceImpl implements ProductService{
     public ProductDto createProduct(ProductDto productDto) {
         requireNonNull(productDto);
         log.info(" create new product ");
-        return productMapper.toDto(productRepository.save(productMapper.toEntity(productDto)));
+        var product = productRepository.save(productMapper.toEntity(productDto));
+        return productMapper.toDto(product);
     }
 
     @Override
-    public List<ProductDto> getAllProducts() {
+    public Page<ProductDto> getAllProducts(Pageable pageable) {
         log.info(" get all products ");
-        return productRepository.findAll().stream().map(productMapper::toDto).collect(Collectors.toList());
+        return productRepository.findAll(pageable).map(productMapper::toDto);
     }
 
     @Override
@@ -44,10 +45,11 @@ public class ProductServiceImpl implements ProductService{
                 .map(productMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
-    @Override
-    public ProductDto updateProduct(ProductDto productDto) {
 
-        return productRepository.findById(productDto.getId())
+    @Override
+    public ProductDto updateProduct(Long id, ProductDto productDto) {
+
+        return productRepository.findById(id)
                 .map(existingProduct -> {
                     productMapper.updateProductFromDto(productDto, existingProduct);
                     //log.info("Updating product [productId: {}]", existingProduct.getId());

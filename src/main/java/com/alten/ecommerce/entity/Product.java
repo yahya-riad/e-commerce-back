@@ -1,6 +1,6 @@
 package com.alten.ecommerce.entity;
 
-import com.alten.ecommerce.model.InventoryStatusEnum;
+import com.alten.ecommerce.model.enumeration.InventoryStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 

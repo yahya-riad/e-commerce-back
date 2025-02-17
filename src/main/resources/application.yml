@@ -10,14 +10,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  
 
-springdoc:
-  api-docs:
-    enabled: true
-    path: /api-docs
-    format: yaml
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
+jwt:
+  secret: "y8nP0hpxbI9jk2s+Y3bB8fh1HQhVmPHdrLJgI5VQH0k="
+  expirationMs: 3600000
+
+cors:
+  allowed-origins: "http://localhost:4200"
